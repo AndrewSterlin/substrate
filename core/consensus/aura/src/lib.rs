@@ -781,7 +781,7 @@ mod tests {
 
 	impl TestNetFactory for AuraTestNet {
 		type Specialization = DummySpecialization;
-		type Verifier = AuraVerifier<PeersFullClient, AuthorityPair>;
+		type Verifier = AuraVerifier<PeersFullClient, AuthorityPair, ()>;
 		type PeerData = ();
 
 		/// Create new test network with peers and given config.
@@ -809,7 +809,8 @@ mod tests {
 						client,
 						inherent_data_providers,
 						phantom: Default::default(),
-					}
+						transaction_pool: Default::default(),
+					})
 				},
 				PeersClient::Light(_) => unreachable!("No (yet) tests for light client + Aura"),
 			}
