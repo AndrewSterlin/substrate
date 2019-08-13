@@ -38,6 +38,7 @@ use inherents::InherentDataProviders;
 use network::construct_simple_protocol;
 use substrate_service::construct_service_factory;
 use substrate_service::TelemetryOnConnect;
+use keystore::KeyStorePtr;
 
 construct_simple_protocol! {
 	/// Demo protocol attachment for substrate.
@@ -216,6 +217,7 @@ construct_service_factory! {
 				client: Arc<FullClient<Self>>,
 				select_chain: Self::SelectChain,
 				transaction_pool: Option<Arc<TransactionPool<Self::FullTransactionPoolApi>>>,
+				keystore: Option<keystore::KeyStorePtr>,
 			| {
 				let (block_import, link_half) =
 					grandpa::block_import::<_, _, _, RuntimeApi, FullClient<Self>, _>(
@@ -232,6 +234,7 @@ construct_service_factory! {
 					client,
 					config.custom.inherent_data_providers.clone(),
 					transaction_pool,
+					keystore,
 				)?;
 
 				config.custom.import_setup = Some((babe_block_import.clone(), link_half, babe_link));
@@ -263,6 +266,7 @@ construct_service_factory! {
 					client.clone(),
 					client,
 					config.custom.inherent_data_providers.clone(),
+					None,
 					None,
 				)?;
 
